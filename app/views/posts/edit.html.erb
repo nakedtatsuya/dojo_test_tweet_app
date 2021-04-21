@@ -1,0 +1,24 @@
+<div class="main posts-new">
+  <div class="container">
+    <h1 class="form-heading">編集する</h1>
+    <%= form_tag("/posts/#{@post.id}/update", {:class => 'new_post_form'}) do %>
+      <div class="form">
+        <div class="form-body">
+          <% @post.errors.full_messages.each do |message| %>
+            <div class="form-error">
+              <%= message %>
+            </div>
+          <% end %>
+          <textarea name="content"><%= @post.content %></textarea>
+          <label for="private">自分にだけ公開</label>
+          <% if @post.is_private %>
+            <input type="checkbox" id="private" name="is_private" value="1" checked>
+          <% else %>
+            <input type="checkbox" id="private" name="is_private" value="1">
+          <% end %>
+          <input type="submit" value="保存">
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

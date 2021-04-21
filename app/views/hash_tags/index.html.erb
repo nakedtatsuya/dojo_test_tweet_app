@@ -1,0 +1,11 @@
+<div class="main posts-index">
+  <div class="container">
+    <% @hash_tags.each do |hash_tag| %>
+      <div class="posts-index-item">
+        <div class="post-right">
+          <%= link_to(hash_tag.value, "/posts/#{hash_tag.post_id}") %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
