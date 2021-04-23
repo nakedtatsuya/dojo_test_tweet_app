@@ -1,69 +1,62 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show edit update destroy ]
-
-  # GET /posts or /posts.json
+  before_action :authenticate_user
+  before_action :ensure_correct_user, {only: [:edit, :update, :destroy]}
+  
   def index
-    @posts = Post.all
+    @posts = Post.all.order(created_at: :desc)
   end
-
-  # GET /posts/1 or /posts/1.json
+  
   def show
+    @post = Post.find_by(id: params[:id])
+    @user = @post.user
+    @likes_count = Like.where(post_id: @post.id).count
   end
-
-  # GET /posts/new
+  
   def new
     @post = Post.new
   end
-
-  # GET /posts/1/edit
-  def edit
-  end
-
-  # POST /posts or /posts.json
+  
   def create
-    @post = Post.new(post_params)
-
-    respond_to do |format|
-      if @post.save
-        format.html { redirect_to @post, notice: "Post was successfully created." }
-        format.json { render :show, status: :created, location: @post }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
-      end
+    @post = Post.new(
+      content: params[:content],
+      user_id: @current_user.id
+    )
+    if @post.save
+      flash[:notice] = "投稿を作成しました"
+      redirect_to("/posts/index")
+    else
+      render("posts/new")
     end
   end
-
-  # PATCH/PUT /posts/1 or /posts/1.json
+  
+  def edit
+    @post = Post.find_by(id: params[:id])
+  end
+  
   def update
-    respond_to do |format|
-      if @post.update(post_params)
-        format.html { redirect_to @post, notice: "Post was successfully updated." }
-        format.json { render :show, status: :ok, location: @post }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
-      end
+    @post = Post.find_by(id: params[:id])
+    @post.content = params[:content]
+    if @post.save
+      flash[:notice] = "投稿を編集しました"
+      redirect_to("/posts/index")
+    else
+      render("posts/edit")
     end
   end
-
-  # DELETE /posts/1 or /posts/1.json
+  
   def destroy
+    @post = Post.find_by(id: params[:id])
     @post.destroy
-    respond_to do |format|
-      format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
-      format.json { head :no_content }
+    flash[:notice] = "投稿を削除しました"
+    redirect_to("/posts/index")
+  end
+  
+  def ensure_correct_user
+    @post = Post.find_by(id: params[:id])
+    if @post.user_id != @current_user.id
+      flash[:notice] = "権限がありません"
+      redirect_to("/posts/index")
     end
   end
-
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post
-      @post = Post.find(params[:id])
-    end
-
-    # Only allow a list of trusted parameters through.
-    def post_params
-      params.require(:post).permit(:content, :user_id)
-    end
+  
 end
