@@ -13,7 +13,7 @@
       <li class="<%= "active" if @active == "posts" %>"><%= link_to("投稿", "/users/#{@user.id}") %></li>
       <li><%= link_to("いいね!", "/users/#{@user.id}/likes") %></li>
       <% if @current_user.id == @user.id %>
-      <li class="<%= "active" if @active == "drafts" %>"><%= link_to("自分にだけ公開している投稿", "/users/#{@user.id}/drafts") %></li>
+      <li class="<%= "active" if @active == "private" %>"><%= link_to("自分にだけ公開している投稿", "/users/#{@user.id}/private") %></li>
       <% end %>
     </ul>
     

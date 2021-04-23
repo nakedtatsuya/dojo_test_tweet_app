@@ -1,5 +1,26 @@
 <div class="main posts-show">
   <div class="container">
+     <% if @post.parent %>
+      <div class="posts-index-item">
+        <% if @post.parent.is_private %>
+          <div class="post-right">
+          <div class="post-user-name">
+            <p>この投稿は現在非公開です</p>
+          </div>
+        </div>
+        <% else %>
+        <div class="post-left">
+          <img src="<%= "/user_images/#{@post.parent.user.image_name}" %>">
+        </div>
+        <div class="post-right">
+          <div class="post-user-name">
+            <%= link_to(@post.parent.user.name, "/users/#{@post.parent.user.id}") %>
+          </div>
+          <%= link_to(@post.parent.content, "/posts/#{@post.parent.id}") %>
+        </div>
+        <% end %>
+      </div>
+    <% end %>
     <div class="posts-show-item">
       <div class="post-user-name">
         <img src="<%= "/user_images/#{@user.image_name}" %>">

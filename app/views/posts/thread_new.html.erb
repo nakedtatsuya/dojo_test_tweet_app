@@ -14,7 +14,7 @@
         <%= @parent_post.created_at %>
       </div>
     </div>
-    <%= form_tag("/posts/#{@parent_post.id}/thread", {:class => 'new_post_form'}) do %>
+    <%= form_tag("/posts/#{@parent_post.id}", {:class => 'new_post_form'}) do %>
       <div class="form">
         <div class="form-body">
           <% @post.errors.full_messages.each do |message| %>
