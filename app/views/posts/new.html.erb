@@ -11,6 +11,13 @@
           <% end %>
           
           <textarea name="content"><%= @post.content %></textarea>
+          <label for="private">自分にだけ公開</label>
+
+          <% if @post.is_private %>
+            <input type="checkbox" id="private" name="is_private" value="1" checked>
+          <% else %>
+            <input type="checkbox" id="private" name="is_private" value="1">
+          <% end %>
           <input type="submit" value="投稿">
         </div>
       </div>

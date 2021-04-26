@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :authenticate_user, {only: [:index, :show, :edit, :update, :likes]}
   before_action :forbid_login_user, {only: [:new, :create, :login_form, :login]}
-  before_action :ensure_correct_user, {only: [:edit, :update]}
+  before_action :ensure_correct_user, {only: [:edit, :update, :private]}
   
   def index
     @users = User.all
@@ -9,6 +9,8 @@ class UsersController < ApplicationController
   
   def show
     @user = User.find_by(id: params[:id])
+    @posts = @user.public_posts
+    @active = "posts"
   end
   
   def new
@@ -79,7 +81,14 @@ class UsersController < ApplicationController
   
   def likes
     @user = User.find_by(id: params[:id])
-    @likes = Like.where(user_id: @user.id)
+    @likes = @user.likes
+  end
+
+  def private
+    @user = User.find_by(id: params[:id])
+    @posts = @user.private_posts
+    @active = "private"
+    render("users/show")
   end
   
   def ensure_correct_user

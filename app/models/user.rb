@@ -8,6 +8,18 @@ class User < ApplicationRecord
     def posts
       return Post.where(user_id: self.id)
     end
+
+    def public_posts
+      return Post.where(user_id: self.id, is_private: false)
+    end
+
+    def private_posts
+      return Post.where(user_id: self.id, is_private: true)
+    end
+
+    def likes
+      return Like.where(user_id: self.id)
+    end
     
   end
   

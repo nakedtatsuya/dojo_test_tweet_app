@@ -10,11 +10,14 @@
     </div>
     
     <ul class="user-tabs">
-      <li class="active"><%= link_to("投稿", "/users/#{@user.id}") %></li>
+      <li class="<%= "active" if @active == "posts" %>"><%= link_to("投稿", "/users/#{@user.id}") %></li>
       <li><%= link_to("いいね!", "/users/#{@user.id}/likes") %></li>
+      <% if @current_user.id == @user.id %>
+      <li class="<%= "active" if @active == "private" %>"><%= link_to("自分にだけ公開している投稿", "/users/#{@user.id}/private") %></li>
+      <% end %>
     </ul>
     
-    <% @user.posts.each do |post| %>
+    <% @posts.each do |post| %>
       <div class="posts-index-item">
         <div class="post-left">
           <img src="<%= "/user_images/#{post.user.image_name}" %>">

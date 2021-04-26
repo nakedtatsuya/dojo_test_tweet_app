@@ -12,6 +12,9 @@
     <ul class="user-tabs">
       <li><%= link_to("投稿", "/users/#{@user.id}") %></li>
       <li class="active"><%= link_to("いいね!", "/users/#{@user.id}/likes") %></li>
+      <% if @current_user.id == @user.id %>
+        <li><%= link_to("自分にだけ公開している投稿", "/users/#{@user.id}/private") %></li>
+      <% end %>
     </ul>
     
     <% @likes.each do |like| %>

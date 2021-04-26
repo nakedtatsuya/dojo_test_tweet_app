@@ -1,9 +1,10 @@
 class PostsController < ApplicationController
   before_action :authenticate_user
   before_action :ensure_correct_user, {only: [:edit, :update, :destroy]}
-  
+  before_action :check_private_owner, {only: [:show]}
+
   def index
-    @posts = Post.all.order(created_at: :desc)
+    @posts = Post.all.where(is_private: false).order(created_at: :desc)
   end
   
   def show
@@ -19,6 +20,7 @@ class PostsController < ApplicationController
   def create
     @post = Post.new(
       content: params[:content],
+      is_private: params[:is_private] || false,
       user_id: @current_user.id
     )
     if @post.save
@@ -36,6 +38,7 @@ class PostsController < ApplicationController
   def update
     @post = Post.find_by(id: params[:id])
     @post.content = params[:content]
+    @post.is_private = params[:is_private] || false
     if @post.save
       flash[:notice] = "投稿を編集しました"
       redirect_to("/posts/index")
@@ -54,6 +57,22 @@ class PostsController < ApplicationController
   def ensure_correct_user
     @post = Post.find_by(id: params[:id])
     if @post.user_id != @current_user.id
+      flash[:notice] = "権限がありません"
+      redirect_to("/posts/index")
+    end
+  end
+
+  def ensure_correct_user
+    @post = Post.find_by(id: params[:id])
+    if @post.user_id != @current_user.id
+      flash[:notice] = "権限がありません"
+      redirect_to("/posts/index")
+    end
+  end
+
+  def check_private_owner
+    @post = Post.find_by(id: params[:id])
+    if @post.is_private && @post.user_id != @current_user.id
       flash[:notice] = "権限がありません"
       redirect_to("/posts/index")
     end
