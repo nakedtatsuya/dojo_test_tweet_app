@@ -1,0 +1,38 @@
+<div class="main posts-new">
+  <div class="container">
+    
+    <h1 class="form-heading">コメントする</h1>
+    <div class="posts-show-item">
+      <div class="post-user-name">
+        <img src="<%= "/user_images/#{@parent_post.user.image_name}" %>">
+        <%= link_to(@parent_post.user.name, "/users/#{@parent_post.user.id}") %>
+      </div>
+      <p>
+        <%= @parent_post.content %>
+      </p>
+      <div class="post-time">
+        <%= @parent_post.created_at %>
+      </div>
+    </div>
+    <%= form_tag("/posts/#{@parent_post.id}", {:class => 'new_post_form'}) do %>
+      <div class="form">
+        <div class="form-body">
+          <% @post.errors.full_messages.each do |message| %>
+            <div class="form-error">
+              <%= message %>
+            </div>
+          <% end %>
+          <textarea name="content"><%= @post.content %></textarea>
+          <label for="private">自分にだけ公開</label>
+
+          <% if @post.is_private %>
+            <input type="checkbox" id="private" name="is_private" value="1" checked>
+          <% else %>
+            <input type="checkbox" id="private" name="is_private" value="1">
+          <% end %>
+          <input type="submit" value="投稿">
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

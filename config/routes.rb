@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   get "posts/index" => "posts#index"
   get "posts/new" => "posts#new"
   get "posts/:id" => "posts#show"
+  get "posts/:parent_id/thread" => "posts#thread_new"
+  post "posts/:parent_id" => "posts#thread_create"
   post "posts/create" => "posts#create"
   get "posts/:id/edit" => "posts#edit"
   post "posts/:id/update" => "posts#update"

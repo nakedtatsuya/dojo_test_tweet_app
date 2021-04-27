@@ -4,17 +4,23 @@ class PostsController < ApplicationController
   before_action :check_private_owner, {only: [:show]}
 
   def index
-    @posts = Post.all.where(is_private: false).order(created_at: :desc)
+    @posts = Post.all.where(is_private: false, parent_id: nil).order(created_at: :desc)
   end
   
   def show
     @post = Post.find_by(id: params[:id])
     @user = @post.user
     @likes_count = Like.where(post_id: @post.id).count
+    @child_posts = @post.child
   end
   
   def new
     @post = Post.new
+  end
+
+  def thread_new
+    @post = Post.new
+    @parent_post = Post.find_by(id: params[:parent_id])
   end
   
   def create
@@ -28,6 +34,22 @@ class PostsController < ApplicationController
       redirect_to("/posts/index")
     else
       render("posts/new")
+    end
+  end
+
+  def thread_create
+    @post = Post.new(
+      content: params[:content],
+      is_private: params[:is_private] || false,
+      user_id: @current_user.id,
+      parent_id: params[:parent_id],
+    )
+    if @post.save
+      flash[:notice] = "投稿を作成しました"
+      redirect_to("/posts/#{params[:parent_id]}")
+    else
+      @parent_post = Post.find_by(id: params[:parent_id])
+      render("posts/thread_new")
     end
   end
   
@@ -54,14 +76,6 @@ class PostsController < ApplicationController
     redirect_to("/posts/index")
   end
   
-  def ensure_correct_user
-    @post = Post.find_by(id: params[:id])
-    if @post.user_id != @current_user.id
-      flash[:notice] = "権限がありません"
-      redirect_to("/posts/index")
-    end
-  end
-
   def ensure_correct_user
     @post = Post.find_by(id: params[:id])
     if @post.user_id != @current_user.id
