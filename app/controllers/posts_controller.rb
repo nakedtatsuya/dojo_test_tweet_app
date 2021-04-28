@@ -44,7 +44,6 @@ class PostsController < ApplicationController
       user_id: @current_user.id,
       parent_id: params[:parent_id],
     )
-    puts @post.parent_id
     if @post.save
       flash[:notice] = "投稿を作成しました"
       redirect_to("/posts/#{params[:parent_id]}")
