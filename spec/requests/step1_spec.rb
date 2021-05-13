@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe "Users", type: :request do
-  let(:image_name_string) { 'default_user.jpg' }
   let(:user_params) { { name: 'にんじゃわんこ', email: 'wanko@prog-8.com', password: 'aaaaaaaa' } }
   let(:user) { User.create(user_params) }
 
